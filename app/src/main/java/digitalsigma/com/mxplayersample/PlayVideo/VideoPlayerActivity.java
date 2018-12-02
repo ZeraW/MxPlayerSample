@@ -35,6 +35,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
         player.startVideo();
     }
 
+
     private void init() {
         player = (JzvdStd) findViewById(R.id.videoplayer);
         mList = new ArrayList<>();
