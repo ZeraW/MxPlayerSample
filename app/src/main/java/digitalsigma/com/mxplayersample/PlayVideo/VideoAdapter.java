@@ -1,16 +1,17 @@
-package digitalsigma.com.mxplayersample;
+package digitalsigma.com.mxplayersample.PlayVideo;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import digitalsigma.com.mxplayersample.R;
 
 /**
  * Created by Hima on 11/29/2018.
@@ -18,9 +19,9 @@ import java.util.List;
 
 public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> {
 
-    Context context;
+    private Context context;
     private List<VideoModel> mList;
-    public AdapterListener onClickListener;
+    private AdapterListener onClickListener;
 
 
 
@@ -57,20 +58,29 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private View mView;
         TextView textView;
+        ImageView downloadVid;
+
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             mView = itemView;
             textView = mView.findViewById(R.id.row_videoList_Title);
+            downloadVid = itemView.findViewById(R.id.DownloadVideos);
 
 
-
-            textView.setOnClickListener(new View.OnClickListener() {
+            mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                     onClickListener.iconTextViewOnClick(v,mList.get(getAdapterPosition()).getTitle(),mList.get(getAdapterPosition()).getUrl());
+                }
+            });
+
+            downloadVid.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onClickListener.iconDownloadViewOnClick(v,mList.get(getAdapterPosition()).getTitle(),mList.get(getAdapterPosition()).getUrl());
                 }
             });
 
@@ -83,7 +93,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
 
         void iconTextViewOnClick(View v,String title,String url);
 
-        void iconImageViewOnClick(View v, int position);
+        void iconDownloadViewOnClick(View v,String title,String url);
 
         void iconImageUnFollowOnClick(View v, int position);
     }

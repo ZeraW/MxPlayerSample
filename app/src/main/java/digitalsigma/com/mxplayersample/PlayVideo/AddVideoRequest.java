@@ -1,7 +1,6 @@
-package digitalsigma.com.mxplayersample;
+package digitalsigma.com.mxplayersample.PlayVideo;
 
 import android.content.Context;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -19,7 +18,7 @@ import java.util.Map;
 
 public class AddVideoRequest {
 
-    Context context;
+    private Context context;
 
     public AddVideoRequest(Context context) {
         this.context = context;

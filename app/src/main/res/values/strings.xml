@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MxPlayerSample</string>
+    <string name="channela_name">Video Downloads</string>
+    <string name="channel_description">this is notification channel for hob el rasul app</string>
 </resources>

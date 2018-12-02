@@ -1,4 +1,4 @@
-package digitalsigma.com.mxplayersample;
+package digitalsigma.com.mxplayersample.PlayVideo;
 
 import android.content.Context;
 import android.graphics.Bitmap;

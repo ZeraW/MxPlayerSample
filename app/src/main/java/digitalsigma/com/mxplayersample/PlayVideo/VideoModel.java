@@ -1,4 +1,4 @@
-package digitalsigma.com.mxplayersample;
+package digitalsigma.com.mxplayersample.PlayVideo;
 
 public class VideoModel {
     private String title,url;
