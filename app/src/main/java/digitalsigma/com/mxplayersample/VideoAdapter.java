@@ -3,11 +3,13 @@ package digitalsigma.com.mxplayersample;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,10 +19,12 @@ import java.util.List;
 public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> {
 
     Context context;
-    private List<String> mList;
+    private List<VideoModel> mList;
     public AdapterListener onClickListener;
 
-    public VideoAdapter(Context context, List<String> mList, AdapterListener onClickListener) {
+
+
+    public VideoAdapter(Context context, List<VideoModel> mList, AdapterListener onClickListener) {
         this.context = context;
         this.mList = mList;
         this.onClickListener = onClickListener;
@@ -34,8 +38,8 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.textView.setText(mList.get(position));
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+        holder.textView.setText(mList.get(position).getTitle());
     }
 
     @Override
@@ -47,9 +51,12 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
         }
     }
 
+    public VideoAdapter() {
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         private View mView;
-        TextView textView ;
+        TextView textView;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -57,12 +64,16 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
             mView = itemView;
             textView = mView.findViewById(R.id.row_videoList_Title);
 
+
+
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onClickListener.iconTextViewOnClick(v, getAdapterPosition());
+
+                    onClickListener.iconTextViewOnClick(v,mList.get(getAdapterPosition()).getTitle(),mList.get(getAdapterPosition()).getUrl());
                 }
             });
+
             //messageText = (TextView) mView.findViewById(R.id.message_text_layout);
 
         }
@@ -70,7 +81,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
 
     public interface AdapterListener {
 
-        void iconTextViewOnClick(View v, int position);
+        void iconTextViewOnClick(View v,String title,String url);
 
         void iconImageViewOnClick(View v, int position);
 

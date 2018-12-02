@@ -4,9 +4,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -18,14 +20,16 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import cn.jzvd.Jzvd;
 import cn.jzvd.JzvdStd;
 
-public class MainActivity extends AppCompatActivity {
+public class VideoPlayerActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private VideoAdapter mAdapter;
-    private ArrayList<String > mList;
+    private ArrayList<VideoModel> mList;
     private JzvdStd player;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,63 +37,24 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         init();
-        addVideos();
-        //jzvdStd.thumbImageView.setImage("http://p.qpic.cn/videoyun/0/2449_43b6f696980311e59ed467f22794e792_1/640");
-    }
-
-    private void addVideos(){
-        final String url = "http://hubalrasul.digitalsigma.io/api/videos";
-        StringRequest req = new StringRequest(Request.Method.GET,url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Toast.makeText(MainActivity.this, ""+response, Toast.LENGTH_SHORT).show();
-                try {
-                    JSONObject object = new JSONObject(response);
-                    JSONArray dataArray = object.getJSONArray("data");
-                    for (int a = 0; a < dataArray.length(); a++) {
-
-                        JSONObject videos = dataArray.getJSONObject(a);
-                        String vid_url = url + videos.getString("video");
-                        //Log.d("response url", songUrl);
-                        mList.add(vid_url);
-                        Toast.makeText(MainActivity.this, "suc", Toast.LENGTH_SHORT).show();
-
-                    }
-
-                    //Collections.reverse(mList);
-                    mAdapter.notifyDataSetChanged();
-                } catch (JSONException e) {
-
-                }
-
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-
-        MySingleton.getInstance(this).addToRequestQueue(req);
+        new AddVideoRequest(this).addVideos(mList,mAdapter);
 
     }
 
     private void playVideo(String url,String videoName){
         player.setUp(url, videoName, Jzvd.SCREEN_WINDOW_NORMAL);
+        //player.thumbImageView.setImage("http://p.qpic.cn/videoyun/0/2449_43b6f696980311e59ed467f22794e792_1/640");
         player.startVideo();
     }
-
 
     private void init(){
         player = (JzvdStd) findViewById(R.id.videoplayer);
         mList = new ArrayList<>();
         mAdapter = new VideoAdapter(this, mList, new VideoAdapter.AdapterListener() {
             @Override
-            public void iconTextViewOnClick(View v, int position) {
+            public void iconTextViewOnClick(View v, String title,String url) {
                 player.setVisibility(View.VISIBLE);
-                String url = "http://hubalrasul.digitalsigma.io/storage/video/ROhZe4ndfA4CZllSjpXwDqB89G8Z7bMjM0VM7Gc2.mp4";
-                playVideo(url,"sweet");
+                playVideo(url,title);
             }
 
             @Override
