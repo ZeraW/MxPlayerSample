@@ -31,19 +31,23 @@ public class DownloadVideos {
 
     public void startdownload(String fileName,String url) {
 
-        File direct = new File(Environment.DIRECTORY_DOWNLOADS);
 
-        if (!direct.exists()) {
-            direct.mkdirs();
+        File SDCardRoot = Environment.getExternalStorageDirectory(); // location where you want to store
+        File directory = new File(SDCardRoot, "/" + "hobelrasul" + "/"); //create directory to keep your downloaded file
+
+        // Toast.makeText(getActivity(), SDCardRoot + "/MusicPro/", Toast.LENGTH_SHORT).show();
+        if (!directory.exists()) {
+            directory.mkdir();
         }
         downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
         Uri uri = Uri.parse(url);
         DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setDescription("My download");
-        request.setDestinationInExternalFilesDir(context, direct.getPath(), fileName+".mp4");
+        request.setDestinationInExternalPublicDir(String.valueOf(directory), fileName+".mp4");
         request.setVisibleInDownloadsUi(true);
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
         refer = downloadManager.enqueue(request);
+
         IntentFilter filter = new IntentFilter(DownloadManager.ACTION_NOTIFICATION_CLICKED);
         notificationClick = new BroadcastReceiver() {
             @Override
@@ -104,7 +108,7 @@ public class DownloadVideos {
     }
 
     public void onDestroyMethod(){
-        context.unregisterReceiver(downloadcomplete);
-        context.unregisterReceiver(notificationClick);
+        //context.unregisterReceiver(downloadcomplete);
+        //context.unregisterReceiver(notificationClick);
     }
 }

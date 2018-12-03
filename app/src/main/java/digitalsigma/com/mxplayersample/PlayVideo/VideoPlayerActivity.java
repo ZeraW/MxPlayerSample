@@ -1,5 +1,7 @@
 package digitalsigma.com.mxplayersample.PlayVideo;
 
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,12 +24,21 @@ public class VideoPlayerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_video_main);
 
+        setTitle(getIntent().getStringExtra("title"));
         init();
-        new AddVideoRequest(this).addVideos(mList, mAdapter);
+
+        //to open video activity
+        if (getIntent().getStringExtra("vid").equals("1")) {
+            new AddVideoRequest(this).addVideos(mList, mAdapter);
+            //to open downloads activity
+        } else if (getIntent().getStringExtra("vid").equals("2")) {
+            new GetdownloadedVid().getDownloadedVid(mList, mAdapter);
+        }
 
     }
+
 
     private void playVideo(String url, String videoName) {
         player.setUp(url, videoName, Jzvd.SCREEN_WINDOW_NORMAL);
@@ -35,11 +46,11 @@ public class VideoPlayerActivity extends AppCompatActivity {
         player.startVideo();
     }
 
-
     private void init() {
         player = (JzvdStd) findViewById(R.id.videoplayer);
         mList = new ArrayList<>();
-        mAdapter = new VideoAdapter(this, mList, new VideoAdapter.AdapterListener() {
+        // i used getintent to hide the download btn in case of downloaded video activity is opened
+        mAdapter = new VideoAdapter(this,getIntent().getStringExtra("vid"), mList, new VideoAdapter.AdapterListener() {
             @Override
             public void iconTextViewOnClick(View v, String title, String url) {
                 player.setVisibility(View.VISIBLE);
@@ -47,9 +58,44 @@ public class VideoPlayerActivity extends AppCompatActivity {
             }
 
             @Override
-            public void iconDownloadViewOnClick(View v, String title, String url) {
+            public void iconDownloadViewOnClick(View v, final String title, final String url) {
 
-                new DownloadVideos(VideoPlayerActivity.this).startdownload(title,url);
+                if (new GetdownloadedVid().checkIfVideoExists(title)) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(VideoPlayerActivity.this);
+                    builder.setMessage("الفيديو موجود فى التحميلات");
+                    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    AlertDialog alert = builder.create();
+                    alert.show();
+
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(VideoPlayerActivity.this);
+                    builder.setMessage("هل تريد تحميل فديو ' " + title + " '");
+                    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            new DownloadVideos(VideoPlayerActivity.this).startdownload(title, url);
+                            dialog.dismiss();
+                        }
+                    });
+
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            dialog.dismiss();
+                        }
+                    });
+
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
             }
 
             @Override
@@ -62,7 +108,6 @@ public class VideoPlayerActivity extends AppCompatActivity {
 
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setStackFromEnd(true);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
     }

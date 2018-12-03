@@ -22,13 +22,15 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
     private Context context;
     private List<VideoModel> mList;
     private AdapterListener onClickListener;
+    private String check;
 
 
 
-    public VideoAdapter(Context context, List<VideoModel> mList, AdapterListener onClickListener) {
+    public VideoAdapter(Context context,String check, List<VideoModel> mList, AdapterListener onClickListener) {
         this.context = context;
         this.mList = mList;
         this.onClickListener = onClickListener;
+        this.check=check;
     }
 
     @Override
@@ -68,6 +70,10 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
             textView = mView.findViewById(R.id.row_videoList_Title);
             downloadVid = itemView.findViewById(R.id.DownloadVideos);
 
+            if (check.equals("2")){
+                downloadVid.setVisibility(View.INVISIBLE);
+            }
+
 
             mView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -91,12 +97,11 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
 
     public interface AdapterListener {
 
-        void iconTextViewOnClick(View v,String title,String url);
+        void iconTextViewOnClick(View v, String title, String url);
 
-        void iconDownloadViewOnClick(View v,String title,String url);
+        void iconDownloadViewOnClick(View v, String title, String url);
 
         void iconImageUnFollowOnClick(View v, int position);
     }
 
 }
-
